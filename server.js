@@ -18,7 +18,12 @@ connectDb();
 
 app.use(logger);
 
-app.use(cors(corsOption));
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
@@ -27,6 +32,7 @@ app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "/public")));
 
 app.use("/", require("./routes/root"));
+app.use("/api", require("./routes/allRoots"));
 
 app.all("*", (req, res) => {
   res.status(404);
@@ -43,7 +49,9 @@ app.use(errorHandler);
 
 mongoos.connection.once("open", () => {
   console.log("connected to mongodb");
-  app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
+  app.listen(PORT, () =>
+    console.log(`Server running on  http://localhost:${PORT}`)
+  );
 });
 
 mongoos.connection.once("error", (err) => {
